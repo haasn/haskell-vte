@@ -583,10 +583,10 @@ terminalSetColorDim terminal dim =
 --
 terminalSetColorCursor :: 
     TerminalClass self => self   
- -> Color   -- ^ @cursor@ - the new color to use for the text cursor 
+ -> Maybe Color   -- ^ @cursor@ - the new color to use for the text cursor 
  -> IO ()
 terminalSetColorCursor terminal cursor =
-    with cursor $ \cursorPtr -> 
+    maybeWith with cursor $ \cursorPtr -> 
     {#call terminal_set_color_cursor#} (toTerminal terminal) (castPtr cursorPtr)
 
 -- | Sets the background color for text which is highlighted. 
@@ -596,10 +596,10 @@ terminalSetColorCursor terminal cursor =
 --
 terminalSetColorHighlight :: 
     TerminalClass self => self   
- -> Color   -- ^ @highlight@ - the new color to use for highlighted text 
+ -> Maybe Color   -- ^ @highlight@ - the new color to use for highlighted text 
  -> IO ()
 terminalSetColorHighlight terminal highlight =
-    with highlight $ \hlPtr -> 
+    maybeWith with highlight $ \hlPtr -> 
     {#call terminal_set_color_highlight#} (toTerminal terminal) (castPtr hlPtr)
 
 -- | The terminal widget uses a 28-color model comprised of the default foreground and background colors, 
