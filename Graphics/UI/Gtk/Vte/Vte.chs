@@ -610,21 +610,20 @@ terminalSetColorHighlight terminal highlight =
 -- If palette_size is 8 or 16, the third (dim) and possibly the second (bold) 8-color palettes are extrapolated from the new background color and the items in palette.
 terminalSetColors :: 
     TerminalClass self => self   
- -> Color   -- ^ @foreground@ - the new foreground color, or @Nothing@ 
- -> Color   -- ^ @background@ - the new background color, or @Nothing@ 
- -> Color   -- ^ @palette@ - the color palette                 
- -> Int   -- ^ @size@ - the number of entries in palette  
+ -> Maybe Color   -- ^ @foreground@ - the new foreground color, or @Nothing@ 
+ -> Maybe Color   -- ^ @background@ - the new background color, or @Nothing@ 
+ -> [Color]   -- ^ @palette@ - the color palette                 
  -> IO ()
-terminalSetColors terminal foreground background palette size =
-    with foreground $ \fPtr ->
-    with background $ \bPtr ->
-    with palette $ \pPtr ->
+terminalSetColors terminal foreground background palette =
+    maybeWith with foreground $ \fPtr ->
+    maybeWith with background $ \bPtr ->
+    withArrayLen palette $ \len pPtr ->
     {#call terminal_set_colors#} 
     (toTerminal terminal) 
     (castPtr fPtr)
     (castPtr bPtr)
     (castPtr pPtr)
-    (fromIntegral size)
+    (fromIntegral len)
 
 -- | Reset the terminal palette to reasonable compiled-in defaults.
 terminalSetDefaultColors :: TerminalClass self => self -> IO ()
